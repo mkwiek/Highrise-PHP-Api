@@ -2175,6 +2175,332 @@
 			$this->curl = curl_init();		
 		}
 	}
-	
-	
-	
+        
+        class HighriseDeal extends HighriseAPI
+	{
+		public $account_id;
+		public $author_id;
+		public $background;
+		public $category_id;
+                public $created_at;
+                public $currency;
+                public $duration;
+                public $group_id;
+                public $id; //not sure bout that yet
+                public $name;
+                public $owner_id;
+                public $party_id;
+                public $price;
+                public $price_type;
+                public $responsible_party_id;
+                public $status;
+                public $status_changed_on;
+                public $updated_at;
+                public $visible_to;
+                public $parties;
+                public $party;
+		public $background;
+		public $company_name;
+
+		
+		public function delete()
+		{
+			$this->postDataWithVerb("/deals/" . $this->getId() . ".xml", "", "DELETE");
+			$this->checkForErrors("Deal", 200);
+		}
+		
+		public function save()
+		{
+//			$person_xml = $this->toXML(false);
+//			if ($this->getId() != null)
+//			{
+//				$new_xml = $this->postDataWithVerb("/people/" . $this->getId() . ".xml?reload=true", $person_xml, "PUT");
+//				$this->checkForErrors("Person");
+//			}
+//			else
+//			{
+//				$new_xml = $this->postDataWithVerb("/people.xml", $person_xml, "POST");
+//				$this->checkForErrors("Person", 201);
+//			}
+//			
+//			// Reload object and add tags.
+//				$tags = $this->tags;
+//				$original_tags = $this->original_tags;
+//				
+//				$this->loadFromXMLObject(simplexml_load_string($new_xml));
+//				$this->tags = $tags;
+//				$this->original_tags = $original_tags;
+//				$this->saveTags();
+//			
+//			return true;
+		}
+			
+		public function toXML($with_id = true)
+		{
+			$xml[] = "<deal>";
+
+			//$fields = array("title", "first_name", "last_name", "background", "visible_to");
+			
+			if ($this->getId() != null)
+				$xml[] = '<id type="integer">' . $this->getId() . '</id>';
+                        
+//			//TODO: adjust this code for deals
+//			$optional_fields = array("company_name");
+//				
+//			foreach($fields as $field)
+//			{
+//				$xml_field_name = str_replace("_", "-", $field);
+//				$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
+//			}
+//			
+//			foreach($optional_fields as $field)
+//			{
+//				if ($this->$field != "")
+//				{
+//					$xml_field_name = str_replace("_", "-", $field);
+//					$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
+//				}
+//			}
+//			
+//			$xml[] = "<contact-data>";
+//			
+//			foreach(array("email_address", "instant_messenger", "twitter_account", "web_address", "address", "phone_number") as $contact_node)
+//			{
+//				if (!strstr($contact_node, "address"))
+//					$contact_node_plural = $contact_node . "s";		
+//				else
+//					$contact_node_plural = $contact_node . "es";
+//				
+//				
+//				if (count($this->$contact_node_plural) > 0)
+//				{
+//					$xml[] = "<" . str_replace("_", "-", $contact_node_plural) . ">";
+//					foreach($this->$contact_node_plural as $items)
+//					{
+//						$xml[] = $items->toXML();
+//					}
+//					$xml[] = "</" . str_replace("_", "-", $contact_node_plural) . ">";
+//				}
+//			}
+//			$xml[] = "</contact-data>";
+//			
+			$xml[] = "</deal>";
+
+			return implode("\n", $xml);
+                        	
+		}
+		
+		public function loadFromXMLObject($xml_obj)
+		{
+//			if ($this->debug)
+//				print_r($xml_obj);
+//			
+//			$this->setId($xml_obj->id);
+//			$this->setFirstName($xml_obj->{'first-name'});
+//			$this->setLastName($xml_obj->{'last-name'});
+//			$this->setTitle($xml_obj->{'title'});
+//			$this->setAuthorId($xml_obj->{'author-id'});
+//			$this->setBackground($xml_obj->{'background'});
+//			$this->setVisibleTo($xml_obj->{'visible-to'});	
+//			$this->setCreatedAt($xml_obj->{'created-at'});
+//			$this->setUpdatedAt($xml_obj->{'updated-at'});
+//			$this->setCompanyId($xml_obj->{'company-id'});
+//			
+//			$this->loadContactDataFromXMLObject($xml_obj->{'contact-data'});
+//			$this->loadTagsFromXMLObject($xml_obj->{'tags'});	
+		}
+		
+		public function getAccount_id() {
+                    return $this->account_id;
+                }
+
+                public function setAccount_id($account_id) {
+                    $this->account_id = $account_id;
+                }
+
+                public function getAuthor_id() {
+                    return $this->author_id;
+                }
+
+                public function setAuthor_id($author_id) {
+                    $this->author_id = $author_id;
+                }
+
+                public function getBackground() {
+                    return $this->background;
+                }
+
+                public function setBackground($background) {
+                    $this->background = $background;
+                }
+
+                public function getCategory_id() {
+                    return $this->category_id;
+                }
+
+                public function setCategory_id($category_id) {
+                    $this->category_id = $category_id;
+                }
+
+                public function getCreated_at() {
+                    return $this->created_at;
+                }
+
+                public function setCreated_at($created_at) {
+                    $this->created_at = $created_at;
+                }
+
+                public function getCurrency() {
+                    return $this->currency;
+                }
+
+                public function setCurrency($currency) {
+                    $this->currency = $currency;
+                }
+
+                public function getDuration() {
+                    return $this->duration;
+                }
+
+                public function setDuration($duration) {
+                    $this->duration = $duration;
+                }
+
+                public function getGroup_id() {
+                    return $this->group_id;
+                }
+
+                public function setGroup_id($group_id) {
+                    $this->group_id = $group_id;
+                }
+                
+                public function getId() {
+                    return $this->id;
+                }
+
+                public function setId($id) {
+                    $this->id = $id;
+                }
+
+                public function getName() {
+                    return $this->name;
+                }
+
+                public function setName($name) {
+                    $this->name = $name;
+                }
+
+                public function getOwner_id() {
+                    return $this->owner_id;
+                }
+
+                public function setOwner_id($owner_id) {
+                    $this->owner_id = $owner_id;
+                }
+
+                public function getParty_id() {
+                    return $this->party_id;
+                }
+
+                public function setParty_id($party_id) {
+                    $this->party_id = $party_id;
+                }
+
+                public function getPrice() {
+                    return $this->price;
+                }
+
+                public function setPrice($price) {
+                    $this->price = $price;
+                }
+
+                public function getPrice_type() {
+                    return $this->price_type;
+                }
+
+                public function setPrice_type($price_type) {
+                    $this->price_type = $price_type;
+                }
+
+                public function getResponsible_party_id() {
+                    return $this->responsible_party_id;
+                }
+
+                public function setResponsible_party_id($responsible_party_id) {
+                    $this->responsible_party_id = $responsible_party_id;
+                }
+
+                public function getStatus() {
+                    return $this->status;
+                }
+
+                public function setStatus($status) {
+                    $this->status = $status;
+                }
+
+                public function getStatus_changed_on() {
+                    return $this->status_changed_on;
+                }
+
+                public function setStatus_changed_on($status_changed_on) {
+                    $this->status_changed_on = $status_changed_on;
+                }
+
+                public function getUpdated_at() {
+                    return $this->updated_at;
+                }
+
+                public function setUpdated_at($updated_at) {
+                    $this->updated_at = $updated_at;
+                }
+
+                public function getVisible_to() {
+                    return $this->visible_to;
+                }
+
+                public function setVisible_to($visible_to) {
+                    $this->visible_to = $visible_to;
+                }
+
+                public function getParties() {
+                    return $this->parties;
+                }
+
+                public function setParties($parties) {
+                    $this->parties = $parties;
+                }
+
+                public function getParty() {
+                    return $this->party;
+                }
+
+                public function setParty($party) {
+                    $this->party = $party;
+                }
+
+                public function getBackground_1() {
+                    return $this->background;
+                }
+
+                public function setBackground_1($background) {
+                    $this->background = $background;
+                }
+
+                public function getCompany_name() {
+                    return $this->company_name;
+                }
+
+                public function setCompany_name($company_name) {
+                    $this->company_name = $company_name;
+                }
+
+		public function __construct(HighriseAPI $highrise)
+		{
+			$this->highrise = $highrise;
+			$this->account = $highrise->account;
+			$this->token = $highrise->token;
+			$this->setVisibleTo("Everyone");
+			$this->debug = $highrise->debug;
+			$this->curl = curl_init();		
+		}
+	}
