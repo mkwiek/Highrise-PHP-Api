@@ -10,7 +10,6 @@
 		* Get Company Name, etc proxy
 		* Convenience methods for saving Notes $person->saveNotes() to check if notes were modified, etc.
 		* Add Tags to Person
-         * testing gitsss
 	*/
 	
 	class HighriseAPI
