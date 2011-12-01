@@ -2176,6 +2176,7 @@
 		}
 	}
         
+        //TODO: parties property
         class HighriseDeal extends HighriseAPI
 	{
 		public $account_id;
@@ -2186,7 +2187,7 @@
                 public $currency;
                 public $duration;
                 public $group_id;
-                public $id; //not sure bout that yet
+                public $id;
                 public $name;
                 public $owner_id;
                 public $party_id;
@@ -2197,9 +2198,8 @@
                 public $status_changed_on;
                 public $updated_at;
                 public $visible_to;
-                public $parties;
+                public $parties = array();
                 public $party;
-		public $background;
 		public $company_name;
 
 		
@@ -2211,79 +2211,90 @@
 		
 		public function save()
 		{
-//			$person_xml = $this->toXML(false);
-//			if ($this->getId() != null)
-//			{
-//				$new_xml = $this->postDataWithVerb("/people/" . $this->getId() . ".xml?reload=true", $person_xml, "PUT");
-//				$this->checkForErrors("Person");
-//			}
-//			else
-//			{
-//				$new_xml = $this->postDataWithVerb("/people.xml", $person_xml, "POST");
-//				$this->checkForErrors("Person", 201);
-//			}
-//			
-//			// Reload object and add tags.
-//				$tags = $this->tags;
-//				$original_tags = $this->original_tags;
-//				
-//				$this->loadFromXMLObject(simplexml_load_string($new_xml));
-//				$this->tags = $tags;
-//				$this->original_tags = $original_tags;
-//				$this->saveTags();
-//			
-//			return true;
+			$dealXML = $this->toXML(false);
+                        
+			if (!empty($this->id))
+			{
+				$new_xml = $this->postDataWithVerb("/deals/" . $this->getId() . ".xml?reload=true", $dealXML, "PUT");
+				$this->checkForErrors("Deal");
+			}
+			else
+			{
+				$new_xml = $this->postDataWithVerb("/deals.xml", $dealXML, "POST");
+				$this->checkForErrors("Deal", 201);
+			}
+			
+				
+                        $this->loadFromXMLObject(simplexml_load_string($new_xml));
+
+			
+			return true;
 		}
+                
+                public function load($id = null) {
+                    if(empty($id) && empty($this->id)) {
+                        return false;
+                    }else {
+                        if(!empty($id)) {
+                            $this->id = $id;
+                        }
+                        $new_xml = $this->postDataWithVerb("/deals/" . $this->getId() . ".xml", "", "GET");
+                        $this->checkForErrors("Deal");
+                        
+                        $this->loadFromXMLObject(simplexml_load_string($new_xml));
+                    }
+                }
 			
 		public function toXML($with_id = true)
 		{
 			$xml[] = "<deal>";
 
-			//$fields = array("title", "first_name", "last_name", "background", "visible_to");
+			$fields = array("name");
 			
 			if ($this->getId() != null)
 				$xml[] = '<id type="integer">' . $this->getId() . '</id>';
                         
-//			//TODO: adjust this code for deals
-//			$optional_fields = array("company_name");
-//				
-//			foreach($fields as $field)
-//			{
-//				$xml_field_name = str_replace("_", "-", $field);
-//				$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
-//			}
-//			
-//			foreach($optional_fields as $field)
-//			{
-//				if ($this->$field != "")
-//				{
-//					$xml_field_name = str_replace("_", "-", $field);
-//					$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
-//				}
-//			}
-//			
-//			$xml[] = "<contact-data>";
-//			
-//			foreach(array("email_address", "instant_messenger", "twitter_account", "web_address", "address", "phone_number") as $contact_node)
-//			{
-//				if (!strstr($contact_node, "address"))
-//					$contact_node_plural = $contact_node . "s";		
-//				else
-//					$contact_node_plural = $contact_node . "es";
-//				
-//				
-//				if (count($this->$contact_node_plural) > 0)
-//				{
-//					$xml[] = "<" . str_replace("_", "-", $contact_node_plural) . ">";
-//					foreach($this->$contact_node_plural as $items)
-//					{
-//						$xml[] = $items->toXML();
-//					}
-//					$xml[] = "</" . str_replace("_", "-", $contact_node_plural) . ">";
-//				}
-//			}
-//			$xml[] = "</contact-data>";
-//			
+			$optional_fields = array(
+                            "account_id",
+                            "author_id",
+                            "background",
+                            "category_id",
+                            "created_at",
+                            "currency",
+                            "duration",
+                            "group_id",
+                            "owner_id",
+                            "party_id",
+                            "price",
+                            "price_type",
+                            "responsible_party_id",
+                            "status",
+                            "status_changed_on",
+                            "updated_at",
+                            "visible_to",
+                            "background",
+                            "company_name",
+                        );
+				
+			foreach($fields as $field)
+			{
+				$xml_field_name = str_replace("_", "-", $field);
+				$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
+			}
+			
+			foreach($optional_fields as $field)
+			{
+				if (!empty($this->$field))
+				{
+					$xml_field_name = str_replace("_", "-", $field);
+					$xml[] = "\t<" . $xml_field_name . ">" . $this->$field . "</" . $xml_field_name . ">";
+				}
+			}
+                        
+                        $xml[] = "<parties type=\"array\">";
+                        
+                        $xml[] = "</parties>";
+			
 			$xml[] = "</deal>";
 
 			return implode("\n", $xml);
@@ -2292,22 +2303,33 @@
 		
 		public function loadFromXMLObject($xml_obj)
 		{
-//			if ($this->debug)
-//				print_r($xml_obj);
-//			
-//			$this->setId($xml_obj->id);
-//			$this->setFirstName($xml_obj->{'first-name'});
-//			$this->setLastName($xml_obj->{'last-name'});
-//			$this->setTitle($xml_obj->{'title'});
-//			$this->setAuthorId($xml_obj->{'author-id'});
-//			$this->setBackground($xml_obj->{'background'});
-//			$this->setVisibleTo($xml_obj->{'visible-to'});	
-//			$this->setCreatedAt($xml_obj->{'created-at'});
-//			$this->setUpdatedAt($xml_obj->{'updated-at'});
-//			$this->setCompanyId($xml_obj->{'company-id'});
-//			
-//			$this->loadContactDataFromXMLObject($xml_obj->{'contact-data'});
-//			$this->loadTagsFromXMLObject($xml_obj->{'tags'});	
+                    if ($this->debug)
+                        print_r($xml_obj);
+
+                    
+                    $this->setAccount_id($xml_obj->{'account-id'})->_toString();
+                    $this->setAuthor_id($xml_obj->{'author-id'})->_toString();
+                    $this->setBackground($xml_obj->background)->_toString();
+                    $this->setCategory_id($xml_obj->{'category-id'})->_toString();
+                    $this->setCreated_at($xml_obj->{'created-at'})->_toString();
+                    $this->setCurrency($xml_obj->currency)->_toString();
+                    $this->setDuration($xml_obj->duration)->_toString();
+                    $this->setGroup_id($xml_obj->{'group-id'})->_toString();
+                    $this->setId($xml_obj->id)->_toString();
+                    $this->setName($xml_obj->name)->_toString();
+                    $this->setOwner_id($xml_obj->{'owner-id'})->_toString();
+                    $this->setParty_id($xml_obj->{'party-id'})->_toString();
+                    $this->setPrice($xml_obj->price)->_toString();
+                    $this->setPrice_type($xml_obj->{'price-type'})->_toString();
+                    $this->setResponsible_party_id($xml_obj->{'responsible-party-id'})->_toString();
+                    $this->setStatus($xml_obj->status)->_toString();
+                    $this->setStatus_changed_on($xml_obj->{'status-changed-on'})->_toString();
+                    $this->setUpdated_at($xml_obj->{'updated-at'})->_toString();
+                    $this->setVisible_to($xml_obj->{'visible-to'})->_toString();
+                    $this->setCompany_name($xml_obj->{'company-name'})->_toString();
+                    
+                    
+                    $this->setPartyFromXML($xml_obj->party);
 		}
 		
 		public function getAccount_id() {
@@ -2477,6 +2499,12 @@
                 public function setParty($party) {
                     $this->party = $party;
                 }
+                
+                public function setPartyFromXML($partyXML) {
+                    $person = new HighrisePerson($this->highrise);
+                    $person->loadFromXMLObject($partyXML);
+                    $this->party = $person;
+                }
 
                 public function getBackground_1() {
                     return $this->background;
@@ -2499,7 +2527,7 @@
 			$this->highrise = $highrise;
 			$this->account = $highrise->account;
 			$this->token = $highrise->token;
-			$this->setVisibleTo("Everyone");
+			$this->setVisible_to("Everyone");
 			$this->debug = $highrise->debug;
 			$this->curl = curl_init();		
 		}
