@@ -382,7 +382,27 @@
 			
 			return $return;
 		}
-		
+                
+                /**
+                 *
+                 * @return array 
+                 */
+                public function getAllDeals() {
+                    $deals = array();
+                    $dealsXML = $this->getXMLObjectForUrl('/deals');
+                    foreach($dealsXML->deal as $dealNode) {
+                        $deal = new HighriseDeal($this);
+                        $deal->loadFromXMLObject($dealNode);
+                        $deals[] = $deal;
+                    }
+                    return $deals;
+                }
+                
+                public function setAttributes($attributes) {
+                    foreach($attributes as $key => $value) {
+                        $this->$key = $value;
+                    }
+                }
 	}
 	
 	class HighriseUser
@@ -2307,29 +2327,30 @@
                         print_r($xml_obj);
 
                     
-                    $this->setAccount_id($xml_obj->{'account-id'})->_toString();
-                    $this->setAuthor_id($xml_obj->{'author-id'})->_toString();
-                    $this->setBackground($xml_obj->background)->_toString();
-                    $this->setCategory_id($xml_obj->{'category-id'})->_toString();
-                    $this->setCreated_at($xml_obj->{'created-at'})->_toString();
-                    $this->setCurrency($xml_obj->currency)->_toString();
-                    $this->setDuration($xml_obj->duration)->_toString();
-                    $this->setGroup_id($xml_obj->{'group-id'})->_toString();
-                    $this->setId($xml_obj->id)->_toString();
-                    $this->setName($xml_obj->name)->_toString();
-                    $this->setOwner_id($xml_obj->{'owner-id'})->_toString();
-                    $this->setParty_id($xml_obj->{'party-id'})->_toString();
-                    $this->setPrice($xml_obj->price)->_toString();
-                    $this->setPrice_type($xml_obj->{'price-type'})->_toString();
-                    $this->setResponsible_party_id($xml_obj->{'responsible-party-id'})->_toString();
-                    $this->setStatus($xml_obj->status)->_toString();
-                    $this->setStatus_changed_on($xml_obj->{'status-changed-on'})->_toString();
-                    $this->setUpdated_at($xml_obj->{'updated-at'})->_toString();
-                    $this->setVisible_to($xml_obj->{'visible-to'})->_toString();
-                    $this->setCompany_name($xml_obj->{'company-name'})->_toString();
+                    $this->setAccount_id((string)$xml_obj->{'account-id'});
+                    $this->setAuthor_id((string)$xml_obj->{'author-id'});
+                    $this->setBackground((string)$xml_obj->background);
+                    $this->setCategory_id((string)$xml_obj->{'category-id'});
+                    $this->setCreated_at((string)$xml_obj->{'created-at'});
+                    $this->setCurrency((string)$xml_obj->currency);
+                    $this->setDuration((string)$xml_obj->duration);
+                    $this->setGroup_id((string)$xml_obj->{'group-id'});
+                    $this->setId((string)$xml_obj->id);
+                    $this->setName((string)$xml_obj->name);
+                    $this->setOwner_id((string)$xml_obj->{'owner-id'});
+                    $this->setParty_id((string)$xml_obj->{'party-id'});
+                    $this->setPrice((string)$xml_obj->price);
+                    $this->setPrice_type((string)$xml_obj->{'price-type'});
+                    $this->setResponsible_party_id((string)$xml_obj->{'responsible-party-id'});
+                    $this->setStatus((string)$xml_obj->status);
+                    $this->setStatus_changed_on((string)$xml_obj->{'status-changed-on'});
+                    $this->setUpdated_at((string)$xml_obj->{'updated-at'});
+                    $this->setVisible_to((string)$xml_obj->{'visible-to'});
+                    $this->setCompany_name((string)$xml_obj->{'company-name'});
                     
-                    
-                    $this->setPartyFromXML($xml_obj->party);
+                    if((string)$xml_obj->party != '') {
+                        $this->setPartyFromXML($xml_obj->party);
+                    }
 		}
 		
 		public function getAccount_id() {
